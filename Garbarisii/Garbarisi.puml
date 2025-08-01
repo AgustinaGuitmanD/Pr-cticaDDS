@@ -1,0 +1,86 @@
+@startuml
+'https://plantuml.com/class-diagram
+
+
+
+class Sucursal
+class Producto
+class TipoDeProd
+interface Impuesto
+
+Sucursal --"*" Producto
+Sucursal --"*" iObserver
+Producto --> TipoDeProd
+TipoDeProd --"*" Impuesto
+OficinaContable -- AdapterSistemaContable
+
+class Sucursal {
+    - nombre : String
+    - Productos : List <Producto>
+    - observers: List<iObserver>
+    + agregarProducto(Producto)
+    + agregarObservador(iObserver)
+    + quitarObservador(iObserver)
+    + vender(Producto)
+}
+
+interface iObserver {
+    + notificarVentaDe(Producto)
+}
+
+class Deposito implements iObserver {
+     + notificarVentaDe(Producto)
+     - preparar(Producto)
+
+}
+
+class ContadorDeVentas implements iObserver {
+     - cantDeVentas : int
+     + notificarVentaDe(Producto)
+}
+
+class OficinaContable implements iObserver {
+     - libroDiario: Double
+     - adapter: AdapterSistemaContable
+     + notificarVentaDe(Producto)
+}
+
+interface AdapterSistemaContable {
+    + notificarVentaDe(Producto)
+}
+
+class AdapterSistemaContableHTTP implements AdapterSistemaContable {
+      + notificarVentaDe(Producto)
+}
+class Producto {
+    -idProducto : Integer
+    -descripcion : String
+    -precioBase: Double
+    -tipoProducto: TipoDeProd
+    + precioFinal()
+    + totalImpuestos()
+}
+
+class TipoDeProd {
+    -descripcion: String
+    -impuestos: List<Impuesto>
+    + agregarImpuesto(Impuesto)
+    + totalDeImpuestosPara(Producto)
+}
+
+interface Impuesto {
+    +calculatePara(Producto)
+}
+
+class Iva implements Impuesto {
+    +calculatePara(Producto)
+}
+
+class EO implements Impuesto {
+    +calculatePara(Producto)
+}
+
+class EI implements Impuesto {
+    +calculatePara(Producto)
+}
+@enduml

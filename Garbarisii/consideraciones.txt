@@ -1,0 +1,54 @@
+1. si no tenemos la clase sucursal vamos a tener una instancia completa
+ levantada en una sucursal y otra en otra. Si tengo la clase sucursal, cada
+ instancia va a representar una sucursal, es decir que los productos van a estar
+ atados a una sucursal. Necesitaría una instancia del sistema.
+
+Desventajas de no tener la clase sucursal y necesitar desplegar el sistema n veces:
+    a. Cuando querramos actualizar el sistema, hay que hacerlo n veces.
+    b. Puede pasar que cada sucursal esté ejecutando una versión distinta de ese
+       sistema -> muchas cosas distintas que mantener.
+
+Ventajas de tener la clase sucursal:
+    a. Tendríamos una única instancia desplegada en nube y todos accediendo a la
+    misma instancia => si necesito implementar un cambio, lo hago una vez y todas
+    las sucursales ven el mismo cambio reflejado. Vamos a tener que tener atados
+    a los empleados de cierta sucursal a su sucursal para saber que cosas mostrarles
+    y cuales no.
+
+2. No modelamos el manejo de stock.
+3. Tengo dos tipos de productos -> hacer una clase abstracta producto y que producto electrónico
+y del hogar hereden de la clase producto, solamente por tipificación ES UN ERROR GRAVE.
+NUNCA HACER HERENCIAS SOLO POR TIPIFICACIÓN -> PARA JUSTIFICAR UNA HERENCIA TIENE QUE
+HABER DISTINTO COMPORTAMIENTO (+ comportamiento compartido).
+Los 2 productos no se comportan distinto, solo se les aplican distintos impuestos.
+Ponerlos como enumerados me va a llevar que tenga que usar condicionales (si es x producto,
+le aplico x impuesto) y si mañana me surgen nuevos productos voy a tener problemas de extensibilidad!
+Crear una interfaz tipo producto y hacer que prod electrónico y de hogar hereden de ella
+es casi lo mismo que la herencia ya que no hay comportamiento distinto entre los 2 tipos de prod.
+
+SOLUCIÓN: En la clase producto tenemos un atributo tipo que es una instancia de
+TipoDeProducto, que es una clase que va a tener una descripción (donde va a decir "electrónico",
+"del hogar") y va a tener una lista de todos los impuestos a aplicarle a ese tipo de producto.
+
+4. Con los impuestos hay cálculos distintos según tipo de impuesto, poner todos los métodos de cálculo
+en una sola clase "Impuesto" rompería con el principio S de SOLID, ya que la la clase tendría la responsabilidad
+de calcular el IVA, el EO y el EI y también rompe con la O de SOLID (open closed) ya que no se puede añadir
+nuevos impuestos a el código sin necesidad de cambiar el código existente. -> Esto afecta directamente a la
+cohesión, extensibilidad y mantenibilidad de mi clase. Termina siendo una god class de la clase.
+
+5. Para notificar una venta a todos los interesados, uso algo parecido al patrón observer,
+para que la sucursal sea quien publique cuando haya ocurrido una venta y que todos aquellos que
+estén interesados en ese topic. La sucursal va a tener una lista de iObservers, solo conoce las
+interfaces => está totalmente desacoplada. El método vender va a iterar sobre la colección de
+iObservers y va a notificar a todos.
+
+6. La sucursal también podría tener una lista de topics con sus respectivas listas de observers
+
+7. AdapterSistemaContableHTTP es quien va a terminar haciendo la request (POST).
+
+8. Gracias a que tenemos la interfaz adapter vamos a poder mockear el sistema externo al que nos
+conectamos.
+
+9. Caundo hacemos esto: this.observers.forEach(o->o.notificarVenta(producto)); en el método
+vender en sucursal, ningún observer debería modificar ni afectarlo el producto ya que de hacerlo, el observer
+que le sigue tendría un producto modificado. Los observers solo deben hacer cosas en consecuencia.
