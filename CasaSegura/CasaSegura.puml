@@ -1,0 +1,45 @@
+@startuml
+'https://plantuml.com/class-diagram
+
+Hogar --"*" iAmenaza
+
+class Hogar {
+    - id: Integer,
+    - dirección: String,
+    - númeroDeTel: String,
+    - fechaDeAlta: DateTime
+    - llamarALaPolicia: Boolean,
+    - numTelPersonaConfiable: String
+    - amenaza: iAmenaza
+
+   reaccionarAnteUnaAmenaza()
+   cambiarAmenaza(iAmenaza amenaza)
+}
+
+interface iAmenaza {
+   + evaluarAmenaza(Hogar hogar)
+   + registrarAmenaza(Hogar hogar)
+}
+
+class Robo implements iAmenaza {
+    - gradoDeRiesgo: Double
+    + decodificarDatosRecibidos()
+    + evaluarAmenaza(Hogar hogar)
+    + registrarAmenaza(Hogar hogar)
+}
+
+class Incendio implements iAmenaza {
+    - valorNivelHumoMax: Double
+    + evaluarAmenaza(Hogar hogar)
+    + registrarAmenaza(Hogar hogar)
+}
+
+class Incendio implements iAmenaza {
+    + evaluarAmenaza(Hogar hogar) -> esto hay que hacerlo con un cron
+    + registrarAmenaza(Hogar hogar)
+}
+
+
+
+
+@enduml

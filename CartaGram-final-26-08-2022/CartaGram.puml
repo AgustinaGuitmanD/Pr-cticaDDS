@@ -1,0 +1,55 @@
+@startuml
+'https://plantuml.com/class-diagram
+
+
+Usuario "*"--"*"Grupo
+Usuario --"*" Chat
+
+
+class Usuario {
+    - nombre: String
+    - nick: String
+}
+
+class Grupo {
+    - nombre: Grupo
+    - participantes: pueden ser usuarios comunes o bots
+    - administrador: Usuario
+    +agregarParticipante(Usuario usuario)
+    +eliminarParticipante(Usuario usuario)
+    +agregarAdministrador(Usuario usuario)
+
+}
+class Chat {
+    Participantes: pueden ser usuarios comunes o bots
+    Mensajes: List<Mensaje>
+}
+
+class Mensaje {
+    emisor
+    receptor:
+    cuerpoMensaje: String
+    adjunto: List<String>
+    fechaHoraEnviado: DateTime
+    fechaHoraRecibido: DateTime
+    fechaHoraLeído: DateTime
+}
+
+
+class Bot {
+    - Nombre
+    - Comandos: List<Comando>
+
+    + parsearAComando()
+}
+
+class Comando {
+    - TextoComando: List<String>
+    - Acciones: List<iAccion>
+    + ejecutar()
+}
+
+interface iAccion {
+    + ejecutar(parametros)
+}
+@enduml

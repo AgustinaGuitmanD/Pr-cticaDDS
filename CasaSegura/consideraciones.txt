@@ -1,0 +1,63 @@
+1. Somos subscriptores de todos los dispositivos que nos envían datos
+para evaluar si la casa esta sufriendo un accidente. Todos envían datos
+cada cierto tiempo. Va a servir usar el patrón broker. Nuestro sistema va
+a estar subscripto al topic en el que los sensores van a estar publicando.
+Cada vez que la cámara/sensores envíen datos, el broker me va a hacer llegar
+un mensaje. Se puede levantar brokers de forma local.
+
+2. No haría que sea una instancia x casa desplegada en
+nube, sino que desplegaría el sistema de forma local en cada casa
+para así garantizar la disponibilidad del sistema, haciendo que si por alguna
+razón mi sistema se cae las demás casas no se vean afectadas. También porque
+considero que de esta forma el sistema va a cumplir con el atributo de calidad
+seguridad ya que si hackean a una instancia de mi sistema, no van a acceder a
+todas las otras. Sin embargo, esto presenta una desventaja para cuando querramos
+hacer cambios/agregar funcionalidades ya que cuando sucedan, habrá que actualizar
+a cada instancia en vez de actualizar a la única instancia. De todas formas,
+considero que en este dominio es más importante garantizar diponibilidad y seguridad.
+Además tengo muchos dispositivos que están en la casa, si cada uno de esos
+dispositivos se van a tener que comunicar con mi instancia desplegada en
+nube, pueden surgir un montón de inconvenientes tales como que mi casa
+pierda internet (todos los dispositivos no van a poder comunicarse con
+el sistema => mi casa queda desprotegida), o si se cae la nube quedan
+desprotegidos todos.
+Otro atributo de calidad que hace que elija esta solución es performance:
+si todos los datos de los dispositivos tienen que viajar x internet
+para ser procesados, tengo una latencia (el tiempo desde que mando el
+dato hasta que llega al servidor web) que no puedo controlar. El sistema
+necesita actuar rápido, por lo que necesito hacerlo lo más cerca posible
+de donde ocurrió.
+-- DATO: si necesitamos personalizar una casa/sucursal entonces vamos a necesitar
+tener desplegado el sistema por cada casa/sucursal.
+
+3. Hago la clase hogar para que ella sea quien guarde sus datos (dirección,
+teléfono, número de sistema, etc).
+
+4. Los robos, incendios, fugas de gas, etc son posibles EVENTOS -> para
+modelarlos
+
+5. Son distintos los momentos de ocurrencia del evento con el de la detección,
+es decir, yo tengo que recibir el dato, procesarlo y determinar si ocurrió
+el evento. Es por eso que no voy a instanciar siempre la clase Evento.
+
+6. Tenemos un mecanismo push based con las cámaras/sensores. El sensor/la
+cámara nos van a mandar los datos cada cierto tiempo (si estuvieramos del
+lado de las cámaras deberíamos implementarlo mediante un cron job pero no
+lo estamos).
+
+7. El flujo es este:
+cámaras/sensores publican -> el broker me hace llegar la info del topic
+-> (acá empieza las funcionalidades de mi sistema)analizo la info y
+determino si es un evento -> actúo en consecuencia.
+
+8. Nos sirve tener el broker ya que gracias a el no tenemos idea de
+cuales son los dispositivos que hay en la casa ni cuantos hay, lo que
+nos va a permitir sumar dispositivos (escalar en cant de dispositivos)
+sin tener que hacer ning
+
+
+una modificación en el sistema. Hay muy
+poco acoplamiento entre los sensores y el sistema.
+
+9.
+

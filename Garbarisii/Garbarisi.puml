@@ -8,11 +8,12 @@ class Producto
 class TipoDeProd
 interface Impuesto
 
-Sucursal --"*" Producto
-Sucursal --"*" iObserver
-Producto --> TipoDeProd
-TipoDeProd --"*" Impuesto
-OficinaContable -- AdapterSistemaContable
+Sucursal "*"--"*" Producto
+Sucursal "*"--"*" iObserver
+Producto "1"--"1" TipoDeProd
+TipoDeProd "*"--"*" Impuesto
+OficinaContable "1"--"1" AdapterSistemaContable
+OficinaContableFactory "1"--"1" AdapterSistemaContable
 
 class Sucursal {
     - nombre : String
@@ -50,7 +51,12 @@ interface AdapterSistemaContable {
 }
 
 class AdapterSistemaContableHTTP implements AdapterSistemaContable {
-      + notificarVentaDe(Producto)
+
+}
+
+class OficinaContableFactory {
+  - adapterSistemaContable: AdapterSistemaContable
+  + crear(): OficinaContable
 }
 class Producto {
     -idProducto : Integer
@@ -73,14 +79,23 @@ interface Impuesto {
 }
 
 class Iva implements Impuesto {
+    - {static} porcentaje: Double
     +calculatePara(Producto)
 }
 
 class EO implements Impuesto {
+  - {static} gananciasImpositivas: Double
+  - {static} factorPrecioBase: Double
+  - {static} factorGananciasImpositivas: Double
     +calculatePara(Producto)
 }
 
 class EI implements Impuesto {
+ - {static} gananciasImpositivas: Double
+  - {static} factorPrecioBase: Double
+  - {static} factorGananciasImpositivas: Double
     +calculatePara(Producto)
 }
+
+
 @enduml

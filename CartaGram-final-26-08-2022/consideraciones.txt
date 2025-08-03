@@ -1,0 +1,39 @@
+1. Entidades dominio: grupo, mensaje, usuario (), chat (si no la creo
+no voy a poder mostrarle a la persona que tiene una conversación con
+otro usuario)
+
+2. Los comandos de los bots estan determinados, no se puede
+crear algo tipo "crear watchlist" -> lo único que puedo
+hacer es elegir uno de los comandos definidos y pasarle los
+parámetros que quiero.
+
+3. Voy a elegir crear una clase "Usuario" y que por cada
+usuario se cree una instancia en nube para así
+
+4. El sistema implementa un mecanismo de pusheo ya que
+implementar un mecanismo de pulleo implicaría que se
+necesite estar constantemente preguntando si hay mensajes
+nuevos, generando una espera activa y consumiendo muchísimos
+recursos. Aplicaría el patrón de arquitectura broker
+y haría que haya un topic por cada usuario y que este
+esté subscripto al mismo y que todos aquellos que le
+quieran mandar un mensaje de forma individual (no en
+un grupo) sean publicadores en ese topic. Para los
+grupos haría que cada grupo sea un topic y que los
+miembros del grupo sean publicadores y subscriptores del
+mismo.
+
+5. Arquitectura -> punto 3: Performance porque estamos hablando de lo eficiente
+que es muestro sistema en la utilización de recursos. No se degrada la
+eficiencia. + Definir performance
+En el primer diagrama el componente de cartaGram Análisis App Pc le está
+pegando a una base de datos no relacional.
+En el segundo diagrama el componente de cartaGram Análisis App Pc le está
+pegando a la misma BD que escribe.
+Si tengo que quedarme con una en base a la performance, me quedo con la
+de arriba, porque la de abajo está leyendo y escribiendo sobre la misma
+BD que está escribiendo nuestro componente core.
+
+6. Para los mensajes de grupo, se tiene una instancia de mensaje por cada
+participante del grupo porque cada integrante va a tener horas distintas
+en los que reciban/lean el mensaje
