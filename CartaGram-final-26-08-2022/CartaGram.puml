@@ -2,18 +2,29 @@
 'https://plantuml.com/class-diagram
 
 
-Usuario "*"--"*"Grupo
+Usuario "*"--Grupo
+Usuario --"*"Grupo
 Usuario --"*" Chat
-
-
-class Usuario {
+Bot --"*" Grupo
+Bot --"*" Comando
+Chat --"*" Mensaje
+Comando --"*"  iAccion
+abstract class Individuo {
+    tipo: String
+    recibirMsj()
+}
+class Usuario implements Individuo{
     - nombre: String
     - nick: String
+    - grupos: List<Grupo>
+    - chats: List<Grupo>
+    + salirDeGrupo(Grupo)
+    + mandarMensaje(Mensaje)
 }
 
 class Grupo {
     - nombre: Grupo
-    - participantes: pueden ser usuarios comunes o bots
+    - participantes: Individuo
     - administrador: Usuario
     +agregarParticipante(Usuario usuario)
     +eliminarParticipante(Usuario usuario)
@@ -26,8 +37,8 @@ class Chat {
 }
 
 class Mensaje {
-    emisor
-    receptor:
+    emisor: Individuo
+    receptor: List<Individuo>
     cuerpoMensaje: String
     adjunto: List<String>
     fechaHoraEnviado: DateTime
@@ -36,17 +47,16 @@ class Mensaje {
 }
 
 
-class Bot {
+class Bot implements Individuo{
     - Nombre
     - Comandos: List<Comando>
-
     + parsearAComando()
 }
 
 class Comando {
     - TextoComando: List<String>
     - Acciones: List<iAccion>
-    + ejecutar()
+    + ejecutar(Mensaje)
 }
 
 interface iAccion {
