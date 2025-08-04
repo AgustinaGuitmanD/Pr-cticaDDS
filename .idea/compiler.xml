@@ -8,6 +8,7 @@
         <outputRelativeToContentRoot value="true" />
         <module name="CartaGram-final-26-08-2022" />
         <module name="Cooperativa_Internet_final05032022" />
+        <module name="motoTrack2024" />
         <module name="Garbarisii" />
         <module name="CasaSegura" />
       </profile>

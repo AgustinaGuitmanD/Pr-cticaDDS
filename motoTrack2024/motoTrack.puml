@@ -1,0 +1,176 @@
+@startuml
+'https://plantuml.com/class-diagram
+
+Motoquero -->"*" Moto
+Motoquero --> Categoria
+Viaje --> Motoquero
+Moto --> Marca
+Moto --> Modelo
+PuntoDeInteres --> TipoPuntoDeInteres
+FeedbackViajes --> Preguntas
+Preguntas --> TipoPregunta
+RecomendacionesPersonalizadas --> IAdapterGPT
+RecomendacionesPersonalizadas --> IAdapterAccuWeather
+RecomendacionesPersonalizadas --> IAdapterWindguru
+CaminoNoConvencional -->"*" FotoCamino
+CaminoNoConvencional -->"*" Categoria
+CaminoNoConvencional --> TipoDeTerreno
+FeedbackViajes --> Viaje
+PuntoDeInteres --> Ubicacion
+Viaje -->"*" TipoPuntoDeInteres
+Viaje --> RecomendacionesPersonalizadas
+Viaje --> "*" CaminoNoConvencional
+CaminoNoConvencional -->"*" Ubicacion
+Viaje --> Moto
+
+class Moto {
+    - marca: Marca
+    - modelo: Modelo
+    - año: Integer
+    - numMatricula: String
+    - fotos: List<String>
+    - copacidadTanque: Integer
+}
+' modelo la marca como un enum ya que quiero garantizar que no voy
+' a tener problemas de consistencia de datos pero como no es usual
+' que aparezcan nuevos modelos de motos, considero que el enum es una
+' buena alternativa
+enum Marca {
+    MARCA1
+    MARCA2
+}
+' lo modelo como una clase ya que quiero garantizar que no voy
+' a tener problemas de consistencia de datos y no lo modelo como un
+' enum ya que si quisiera agregar un nuevo modelo, tendría que cortar
+' la ejecución, de esta forma solo instancio una nueva clase
+
+class Modelo {
+    - nombre: String
+}
+
+
+class CaminoNoConvencional {
+    - nombre: String
+    - descripcion: String
+    - fotosCamino: List<FotoCamino>
+    - nivelDificultad: List<Categoria>
+    - tipoDeTerreno: TipoDeTerreno
+    - duracionEstimada: DateTime
+    - puntoDePartida: Ubicacion
+    - puntoDeLlegada: Ubicacion
+
+    + agregarFoto(FotoCamino)
+    
+}
+
+class FotoCamino {
+    - linkFoto: String
+    - descripcion: String
+}
+
+class TipoDeTerreno {
+    - nombre: String
+}
+
+class Motoquero {
+    - nombre: String
+    - categoria: Categoria
+    - cantKilometrosRecorridos: Double
+    - motos: List<Moto>
+
+    + agregarMoto(Moto)
+    + recorrerCaminoNoConvencional() --> Este es el que llama al state
+    + cambiarCategoria(Categoria)
+    + evaluarCategoriaIncial(): Categoria
+    ' cuando se instancia un viaje se hace seleccionando los caminos
+    ' de la lista de caminos disponibles que devuelve la categoria
+    + planificarViaje(Viaje)
+}
+
+' para categoria no voy a usar el patrón state ya que un motoquero
+' inicia con una categoria y cada vez que se llama al metdo
+'  recorrerCaminoNoConvencional se debe evaluar si hay que cambiar
+'  su categoria ya que no existe comportamiento suficiente
+' que lo justifique, lo único que cambian son los valores.
+' No implementé el patrón template method ya que
+' las 3 categorías tienen el mismo comportamiento: 1. aumentan los kms
+' recorridos del motoquero 2. se fijan si con ese aumento le corresponde
+' otra categoria, lo único que cambia es el mínimo de kms
+
+class Categoria {
+    - motoquero: Motoquero
+    + recorrerCaminoNoConvencional(CaminoNoConvencional)
+    # evaluarSubirCategoria(): Boolean
+    # cambiarCategoria(Categoria): void
+    # caminosDisponibles(): List<CaminoNoConvencional>
+}
+
+class PuntoDeInteres {
+    - nombre: String
+    - descripción: String
+    - tipoPuntoDeInteres: TipoPuntoDeInteres
+    - ubicacion: Ubicacion
+    - fotos: String
+}
+class TipoPuntoDeInteres {
+    - nombre: String
+}
+class Ubicacion {
+    - latitud: double
+    - longitud: double
+}
+
+class Viaje {
+    - motoquero: Motoquero
+    - fecha: Fecha
+    - caminosElegidos: List<CaminoNoConvencional>
+    - intereses: List <TipoPuntoDeInteres>
+    - moto: Moto
+
+    + agregarCamino(CaminoNoConvencional)
+    + sacarCamino(CaminoNoConvencional)
+    + agregarPuntoDeInteres
+    + sacarPuntoDeInteres(PuntoDeInteres)
+}
+
+class RecomendacionesPersonalizadas {
+    - viaje: Viaje
+    - lugaresAVisitar: List<PuntoDeInteres>
+    - precaucionesClima: List<String>
+    - tipsSeguridad: List<String>
+    - adapterAccuWeather: IAdapterAccuWeather
+    - adapterWindguru: IAdapterWindguru
+    - adapterGPT: IAdapterGPT
+
+    + obtenerTipsSeguridad(): List<String>
+    + precaucionesClima(): String
+}
+interface IAdapterAccuWeather {
+    + precaucionesClima(): String
+
+}
+interface IAdapterWindguru {
+  + precaucionesClima(): String
+}
+
+interface IAdapterGPT {
+    + obtenerTipsSeguridad(): List<String>
+}
+
+class FeedbackViajes {
+    - minEstrellas: Integer
+    - maxEstrellas: Integer
+    - preguntas: List<Preguntas>
+    - viaje: Viaje
+}
+
+class Preguntas {
+    pregunta: String
+    tipoPregunta: tipoPregunta
+    respuesta: List<String>
+}
+
+class TipoPregunta {
+    nombre: String
+}
+@enduml
