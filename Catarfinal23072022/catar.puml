@@ -1,0 +1,132 @@
+@startuml
+'https://plantuml.com/class-diagram
+
+
+'alumno o participante
+'premio
+
+class Participante {
+    - nombre: String
+    - apellido: String
+    - edad : int
+    - mail : String
+    - dni : long
+    - mediosDeContacto: List<MedioDeContacto>
+    - referidos : List<Referido>
+    - categoria: Categoria
+    - adapterSuaDino : IAdapterSuaDino
+    - esReferido : boolean
+    + referir(dni: long, email: String)
+    + getHistorialAcademico() : List<Materia>
+}
+
+class Materia {
+    - nombre: String
+    - nota: double
+    ' true = promocion o final // false = regularizada
+    - aprobada : boolean
+}
+interface IAdapterSuaDino  {
+    + getHistorialAcademico(dni : long) : List<Materia>
+}
+
+class AdapterSuaDino implements IAdapterSuaDino{
+    - cliente : SuaDino
+    + getHistorialAcademico(dni : long) : List<Materia>
+}
+
+class SuaDino {
+    + consultarHistorialAcademico(dni : long) : MateriaDTO
+}
+
+class Categoria {
+    - nombre : String
+    - precio : double
+    - multiplicadorDeChances : int
+    - minimoReferidos : int
+    + multiplicadorChances(): int
+    + cumpleConMinimo(): Boolean
+}
+
+class Referido {
+    - mail : String
+    - dni : long
+    - referente : Participante
+    - canalesDeComunicacion : List<TipoMedioContacto>
+'    - notificador: INotificador
+    + aceptar() : Participante
+    + generarNotificacion() : notificacionReferido
+}
+
+class MedioDeContacto {
+    - tipo : TipoMedioContacto
+    - valor : String
+}
+
+enum TipoMedioContacto {
+ - SMS
+ - WHATSAPP
+ - EMAIL
+}
+
+class notificacionReferido {
+    - destinatario: Participante
+    - referido : Referido
+    - mensaje : String
+}
+
+class Notificador {
+    - tiposDeNotificacion : List<INotificador>
+    + enviar(notificacionReferido)
+}
+
+interface INotificador {
+    + notificar(notificacionReferido)
+}
+
+class NotificadorWpp implements INotificador {
+    + notificar(notificacionReferido)
+}
+
+class NotificadorSms implements INotificador {
+    + notificar(notificacionReferido)
+}
+class NotificadorMail implements INotificador {
+    + notificar(notificacionReferido)
+}
+
+class CalculadorDeProbabilidad {
+    - adapterArU2022: IAdapterArU2022
+    + calcularProbabilidad(chances : int) : double
+    - calcularChances(participante : Participante) : int
+}
+
+interface IAdapterArU2022 {
+    + esEstudiante(dni : long) : boolean
+}
+
+class AdapterArU2022 implements IAdapterArU2022 {
+    - cliente : ArU2022
+    + esEstudiante(dni : long) : boolean
+}
+
+class ArU2022 {
+    + consultarEstudianteRegular(dni : long) : EstudianteDTO
+}
+
+Participante -->"*" MedioDeContacto
+MedioDeContacto --> TipoMedioContacto
+Participante <-->"*" Referido
+Participante ..> Materia
+Participante --> Categoria
+Participante --> IAdapterSuaDino
+AdapterSuaDino --> SuaDino
+Referido --> TipoMedioContacto
+Notificador --> notificacionReferido
+Notificador -->"*" INotificador
+Referido ..> notificacionReferido
+CalculadorDeProbabilidad ..> Participante
+AdapterArU2022 --> ArU2022
+CalculadorDeProbabilidad --> IAdapterArU2022
+
+@enduml

@@ -60,7 +60,7 @@ class CaminoNoConvencional {
     - puntoDeLlegada: Ubicacion
 
     + agregarFoto(FotoCamino)
-    
+
 }
 
 class FotoCamino {

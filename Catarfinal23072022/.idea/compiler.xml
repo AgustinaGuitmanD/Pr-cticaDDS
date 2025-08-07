@@ -6,18 +6,8 @@
         <sourceOutputDir name="target/generated-sources/annotations" />
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
-        <module name="CartaGram-final-26-08-2022" />
-        <module name="Cooperativa_Internet_final05032022" />
-        <module name="motoTrack2024" />
-        <module name="Garbarisii" />
         <module name="Catarfinal23072022" />
-        <module name="CasaSegura" />
       </profile>
     </annotationProcessing>
-  </component>
-  <component name="JavacSettings">
-    <option name="ADDITIONAL_OPTIONS_OVERRIDE">
-      <module name="Garbarisii" options="-parameters" />
-    </option>
   </component>
 </project>
